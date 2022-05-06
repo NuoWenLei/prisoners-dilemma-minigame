@@ -3,23 +3,47 @@ from computer_decisions import *
 
 class Game():
 
-	def __init__(self, mode: str):
-		self.mode = mode
-		if self.mode == "RL":
-			self.computer = Computer_RL()
-		if self.mode == "RANDOM":
-			self.computer = Computer_Random()
-		if self.mode == "MIMIC":
-			self.computer = Computer_Mimic()
+	def __init__(self, mode: str = None, to_restore: bool = False):
+		if not to_restore:
+			self.mode = mode
+			if self.mode == "RL":
+				self.computer = Computer_RL()
+			if self.mode == "RANDOM":
+				self.computer = Computer_Random()
+			if self.mode == "MIMIC":
+				self.computer = Computer_Mimic()
 
-		self.number_to_decision = {
-			0: "cooperate",
-			1: "defect"
-		}
-		
-		self.states = []
-		self.user_points = 0
-		self.computer_points = 0
+			self.number_to_decision = {
+				"0": "cooperate",
+				"1": "defect"
+			}
+			
+			self.states = []
+			self.user_points = 0
+			self.computer_points = 0
+			self.round_number = 0
+			self.total_rounds = random.randint(5, 15)
+			self.game_end = False
+			self.winner = ""
+
+	def serialize(self):
+		self.__dict__["computer"] = self.computer.__dict__
+		return self.__dict__
+
+	def restore_session(d: dict):
+		new_game = Game(to_restore=True)
+		for k in d.keys():
+			if k == "computer":
+				if d["mode"] == "RL":
+					comp = Computer_RL
+				if d["mode"] == "RANDOM":
+					comp = Computer_Random
+				if d["mode"] == "MIMIC":
+					comp = Computer_Mimic
+				new_game.__dict__[k] = comp.restore_session(d["computer"])
+			else:
+				new_game.__dict__[k] = d[k]
+		return new_game
 		
 	
 	def advance_state(self, user_input):
@@ -37,6 +61,18 @@ class Game():
 
 		self.computer.update_state(state)
 		self.states.append(state)
+		self.round_number += 1
+		if self.round_number >= self.total_rounds:
+			self.game_end = True
+			self.find_winner()
+	
+	def find_winner(self):
+		if self.user_points > self.computer_points:
+			self.winner = "User"
+		elif self.user_points < self.computer_points:
+			self.winner = "Computer"
+		elif self.user_points == self.computer_points:
+			self.winner = "Tie"
 
 	
 	def calculate_points(self, user_guess, computer_guess):
@@ -61,8 +97,8 @@ class Game():
 		if len(self.states) > 0:
 			print("------------------------------------------")
 			print()
-			print(f"User's choice: {self.number_to_decision[self.states[-1]['user_decision']]}")
-			print(f"Computer's choice: {self.number_to_decision[self.states[-1]['computer_decision']]}")
+			print(f"User's choice: {self.number_to_decision[str(self.states[-1]['user_decision'])]}")
+			print(f"Computer's choice: {self.number_to_decision[str(self.states[-1]['computer_decision'])]}")
 			print()
 			print(f"User awarded {self.states[-1]['user_points']} points")
 			print(f"Computer awarded {self.states[-1]['computer_points']} points")
@@ -74,4 +110,17 @@ class Game():
 		print(f"Total Computer Points: {self.computer_points}")
 		print()
 		print("------------------------------------------")
+	
+	def package_state(self):
+		return {
+			"round_number": self.round_number,
+			"total_rounds": self.total_rounds,
+			"user_points": self.user_points,
+			"computer_points": self.computer_points,
+			"prev_user_choice": self.number_to_decision[str(self.states[-1]['user_decision'])] if len(self.states) > 0 else None,
+			"prev_computer_choice": self.number_to_decision[str(self.states[-1]["computer_decision"])] if len(self.states) > 0 else None,
+			"prev_user_reward": self.states[-1]['user_points'] if len(self.states) > 0 else None,
+			"prev_computer_reward": self.states[-1]['computer_points'] if len(self.states) > 0 else None,
+			"winner": self.winner
+		}
 		

@@ -11,7 +11,7 @@ def main():
 
 	user_input = ""
 
-	while True:
+	while not new_game.game_end:
 		user_input = input("Please make your choice (0: cooperate, 1: defect, q: quit)").strip()
 
 		while user_input not in ["0", "1", "q"]:
@@ -23,8 +23,11 @@ def main():
 		new_game.advance_state(user_input.strip())
 
 		new_game.print_state()
-	
 
+	if new_game.winner == "Tie":
+		print("The result was a tie!!!")
+	else:
+		print(f"The winner is ... {new_game.winner}!!!")
 
 if __name__ == "__main__":
 	main()

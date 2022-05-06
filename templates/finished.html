@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+{% if game_state["winner"] != "Tie": %}
+<p class = "lead">
+<h1>And the winner is ... the {{game_state["winner"]}}!!!</h1>
+</p>
+
+{% else: %}
+
+<p class = "lead">
+	<h1>Tie game!</h1>
+	</p>
+
+{% endif %}
+
+<p class = "lead">
+	Total rounds: {{game_state["total_rounds"]}}<br>
+	User Points: {{game_state["user_points"]}}<br>
+	Computer Points: {{game_state["computer_points"]}}
+</p>
+
+
+
+
+
+{% endblock %}

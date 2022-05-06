@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<p class = "lead">
+<h2>Select Your Opponent: </h2>
+</p>
+
+<form action = "/" method = "post">
+
+	<p class = "lead">
+<input type="radio" class="btn-check" name="options" id="radio_rl" value = "RL" autocomplete="off" checked>
+<label class="btn btn-outline-light" for="radio_rl">Reinforcement Learning</label>
+
+<input type="radio" class="btn-check" name="options" id="radio_random" value = "RANDOM" autocomplete="off">
+<label class="btn btn-outline-light" for="radio_random">Random</label>
+
+<input type="radio" class="btn-check" name="options" id="radio_mimic" value = "MIMIC" autocomplete="off">
+<label class="btn btn-outline-light" for="radio_mimic">Mimic</label>
+<div class="d-grid gap-2 col-6 mx-auto">
+<input type = "submit" class = "btn btn-secondary">
+</div>
+</p>
+
+</form>
+
+
+
+{% endblock %}

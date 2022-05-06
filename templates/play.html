@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<hr class="dropdown-divider">
+{% if game_state["prev_user_choice"]: %}
+
+<p class = "lead">
+<h2>Previous State: </h2>
+</p>
+<p class = "lead">
+	Round {{game_state["round_number"] - 1}}: <br>
+	User Choice: {{game_state["prev_user_choice"]}} <br>
+	Computer Choice: {{game_state["prev_computer_choice"]}} <br>
+	User Awarded Points: {{game_state["prev_user_reward"]}} <br>
+	Computer Awarded Points: {{game_state["prev_computer_reward"]}}
+</p>
+<hr class="dropdown-divider">
+{% endif %}
+
+<p class = "lead">
+	<h5>Round {{game_state["round_number"]}} / {{game_state["total_rounds"]}}</h5>
+</p>
+<p class = "lead">
+	<h6>User Points {{game_state["user_points"]}}</h6>
+	<h6>Computer Points {{game_state["computer_points"]}}</h6>
+</p>
+<form action = "/play" method = "post">
+
+	<p class = "lead">
+<input type="radio" class="btn-check" name="user_choice" id="radio_coop" value = "0" autocomplete="off">
+<label class="btn btn-outline-light" for="radio_coop">Cooperate</label>
+
+<input type="radio" class="btn-check" name="user_choice" id="radio_defect" value = "1" autocomplete="off">
+<label class="btn btn-outline-light" for="radio_defect">Defect</label>
+
+<div class="d-grid gap-2 col-6 mx-auto">
+<input type = "submit" class = "btn btn-secondary">
+</div>
+</p>
+
+</form>
+
+
+
+{% endblock %}

@@ -1,6 +1,7 @@
 import numpy as np
 import random
 
+
 class Computer_RL():
 
 	def __init__(self, exploration_decreasing_decay = 0.01, min_exploration_proba = 0.01, gamma = 0.99, lr = 0.1):
@@ -9,7 +10,7 @@ class Computer_RL():
 		self.min_exploration_proba = min_exploration_proba
 		self.gamma = gamma
 		self.lr = lr
-		self.Q_table = np.zeros((2,2))
+		self.Q_table = [[0., 0.], [0., 0.]]
 		self.decision_to_number = {
 			"cooperate": 0,
 			"defect": 1
@@ -34,7 +35,7 @@ class Computer_RL():
 		if np.random.uniform(0,1) <= self.exploration_proba:
 			action = random.randint(0, 1)
 		else:
-			action = int(np.argmax(self.Q_table[current_state,:]))
+			action = int(np.argmax(np.array(self.Q_table[current_state])))
 		self.computer_decision_sequence.append(action)
 		return action
 
@@ -46,11 +47,17 @@ class Computer_RL():
 			prev_state = self.user_decision_sequence[-1]
 			prev_action = self.computer_decision_sequence[-1]
 			reward = self.scale_reward(state["computer_points"])
-			self.Q_table[prev_state, prev_action] = (1-self.lr) * self.Q_table[prev_state, prev_action] + self.lr * (reward + self.gamma * max(self.Q_table[state["user_decision"],:]))
+			self.Q_table[prev_state][prev_action] = (1-self.lr) * self.Q_table[prev_state][prev_action] + self.lr * (reward + self.gamma * max(self.Q_table[state["user_decision"]]))
 		self.round += 1
 		self.user_decision_sequence.append(state["user_decision"])
 		self.points += state["computer_points"]
 		self.exploration_proba = max(self.min_exploration_proba, np.exp(-self.exploration_decreasing_decay*self.round))
+
+	def restore_session(d: dict):
+		new_comp = Computer_RL()
+		for k in d.keys():
+			new_comp.__dict__[k] = d[k]
+		return new_comp
 
 class Computer_Random():
 	def __init__(self):
@@ -66,6 +73,12 @@ class Computer_Random():
 	def update_state(self, state):
 		self.user_decision_sequence.append(state["user_decision"])
 		self.points += state["computer_points"]
+	
+	def restore_session(d: dict):
+		new_comp = Computer_Random()
+		for k in d.keys():
+			new_comp.__dict__[k] = d[k]
+		return new_comp
 
 class Computer_Mimic():
 	def __init__(self):
@@ -81,6 +94,12 @@ class Computer_Mimic():
 	def update_state(self, state):
 		self.user_decision_sequence.append(state["user_decision"])
 		self.points += state["computer_points"]
+	
+	def restore_session(d: dict):
+		new_comp = Computer_Random()
+		for k in d.keys():
+			new_comp.__dict__[k] = d[k]
+		return new_comp
 
 		
 
