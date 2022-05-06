@@ -24,17 +24,20 @@
 	<h6>User Points {{game_state["user_points"]}}</h6>
 	<h6>Computer Points {{game_state["computer_points"]}}</h6>
 </p>
+<!-- <script>
+
+</script> -->
 <form action = "/play" method = "post">
 
 	<p class = "lead">
-<input type="radio" class="btn-check" name="user_choice" id="radio_coop" value = "0" autocomplete="off">
+<input type="radio" class="btn-check" name="user_choice" id="radio_coop" onclick="document.getElementById('submit_button').disabled = false;" value = "0" autocomplete="off">
 <label class="btn btn-outline-light" for="radio_coop">Cooperate</label>
 
-<input type="radio" class="btn-check" name="user_choice" id="radio_defect" value = "1" autocomplete="off">
+<input type="radio" class="btn-check" name="user_choice" id="radio_defect" onclick="document.getElementById('submit_button').disabled = false;" value = "1" autocomplete="off">
 <label class="btn btn-outline-light" for="radio_defect">Defect</label>
 
 <div class="d-grid gap-2 col-6 mx-auto">
-<input type = "submit" class = "btn btn-secondary">
+<input type = "submit" id="submit_button" class = "btn btn-secondary" disabled>
 </div>
 </p>
 
